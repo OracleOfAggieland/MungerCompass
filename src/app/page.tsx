@@ -38,7 +38,7 @@ export default function PurchaseAdvisorPage() {
 
   const form = useForm<PurchaseFormValues>({
     resolver: zodResolver(purchaseSchema),
-    defaultValues: { itemName: '', purpose: '', frequency: '' },
+    defaultValues: { itemName: '', cost: 0, purpose: '', frequency: '' },
   });
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +72,11 @@ export default function PurchaseAdvisorPage() {
     resetState();
     setIsLoading(true);
     try {
-      const result = await mungerStyleAnalysis({ ...data, imageUrl: data.image });
+      const sanitizedData = {
+        ...data,
+        frequency: data.frequency || undefined,
+      };
+      const result = await mungerStyleAnalysis({ ...sanitizedData, imageUrl: data.image });
       setAnalysisResult(result);
     } catch (e) {
       setError("An error occurred while getting advice. Please try again.");
